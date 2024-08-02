@@ -31,6 +31,7 @@ from .storage import (
     PipelineMemoryStorageConfig,
     PipelineStorageConfig,
     PipelineStorageConfigTypes,
+    PipelineS3StorageConfig,
 )
 from .workflow import (
     PipelineWorkflowConfig,
@@ -52,6 +53,7 @@ __all__ = [
     "PipelineFileCacheConfig",
     "PipelineFileReportingConfig",
     "PipelineFileStorageConfig",
+    "PipelineS3StorageConfig",
     "PipelineInputConfig",
     "PipelineInputConfigTypes",
     "PipelineMemoryCacheConfig",

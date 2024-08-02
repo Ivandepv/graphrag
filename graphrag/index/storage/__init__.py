@@ -5,6 +5,7 @@
 
 from .blob_pipeline_storage import BlobPipelineStorage, create_blob_storage
 from .file_pipeline_storage import FilePipelineStorage
+from .s3_pipeline_storage import S3PipelineStorage
 from .load_storage import load_storage
 from .memory_pipeline_storage import MemoryPipelineStorage
 from .typing import PipelineStorage
@@ -12,6 +13,7 @@ from .typing import PipelineStorage
 __all__ = [
     "BlobPipelineStorage",
     "FilePipelineStorage",
+    "S3PipelineStorage",
     "MemoryPipelineStorage",
     "PipelineStorage",
     "create_blob_storage",

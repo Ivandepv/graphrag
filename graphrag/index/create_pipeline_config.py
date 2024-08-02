@@ -42,6 +42,7 @@ from graphrag.index.config.reporting import (
 from graphrag.index.config.storage import (
     PipelineBlobStorageConfig,
     PipelineFileStorageConfig,
+    PipelineS3StorageConfig,
     PipelineMemoryStorageConfig,
     PipelineStorageConfigTypes,
 )
@@ -547,6 +548,35 @@ def _get_storage_config(
                 base_dir=settings.storage.base_dir,
                 storage_account_blob_url=storage_account_blob_url,
             )
+        case StorageType.s3:
+            aws_access_key_id = settings.storage.aws_access_key_id
+            aws_secret_access_key = settings.storage.aws_secret_access_key
+            bucket_name = settings.storage.bucket_name
+            base_prefix = settings.storage.base_prefix
+            region_name = settings.storage.region_name
+            if bucket_name is None:
+                msg = "Bucket name must be provided for S3 storage."
+                raise ValueError(msg)
+            if base_prefix is None:
+                msg = "Base prefix must be provided for S3 storage."
+                raise ValueError(msg)
+            if aws_access_key_id is None:
+                msg = "AWS access key ID must be provided for S3 storage."
+                raise ValueError(msg)
+            if aws_secret_access_key is None:
+                msg = "AWS secret access key must be provided for S3 storage."
+                raise ValueError(msg)
+            if region_name is None:
+                msg = "Region name must be provided for S3 storage."
+                raise ValueError(msg)
+            return PipelineS3StorageConfig(
+                aws_access_key_id=aws_access_key_id,
+                aws_secret_access_key=aws_secret_access_key,
+                bucket_name=bucket_name,
+                base_prefix=base_prefix,
+                region_name=region_name,
+            )
+
         case _:
             # relative to the root_dir
             base_dir = settings.storage.base_dir

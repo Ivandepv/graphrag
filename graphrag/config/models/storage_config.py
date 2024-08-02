@@ -28,3 +28,18 @@ class StorageConfig(BaseModel):
     storage_account_blob_url: str | None = Field(
         description="The storage account blob url to use.", default=None
     )
+    aws_access_key_id: str | None = Field(
+        description="The AWS access key id to use.", default=None
+    )
+    aws_secret_access_key: str | None = Field(
+        description="The AWS secret access key to use.", default=None
+    )
+    bucket_name: str | None = Field(
+        description="The bucket name to use.", default=None
+    )
+    base_prefix: str | None = Field(
+        description="The base prefix to use.", default=None
+    )
+    region_name: str | None = Field(
+        description="The region name to use.", default=None
+    )

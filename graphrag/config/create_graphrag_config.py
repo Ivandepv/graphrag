@@ -380,6 +380,11 @@ def create_graphrag_config(
                 storage_account_blob_url=reader.str(Fragment.storage_account_blob_url),
                 container_name=reader.str(Fragment.container_name),
                 base_dir=reader.str(Fragment.base_dir) or defs.STORAGE_BASE_DIR,
+                aws_access_key_id=reader.str(Fragment.aws_access_key_id),
+                aws_secret_access_key=reader.str(Fragment.aws_secret_access_key),
+                bucket_name=reader.str(Fragment.bucket_name),
+                base_prefix=reader.str(Fragment.base_prefix),
+                region_name=reader.str(Fragment.region_name),
             )
         with reader.envvar_prefix(Section.chunk), reader.use(values.get("chunks")):
             group_by_columns = reader.list("group_by_columns", "BY_COLUMNS")
@@ -608,6 +613,11 @@ class Fragment(str, Enum):
     thread_stagger = "THREAD_STAGGER"
     tpm = "TOKENS_PER_MINUTE"
     type = "TYPE"
+    aws_access_key_id = "AWS_ACCESS_KEY_ID"
+    aws_secret_access_key = "AWS_SECRET_ACCESS_KEY"
+    bucket_name = "BUCKET_NAME"
+    base_prefix = "BASE_PREFIX"
+    region_name = "REGION_NAME"
 
 
 class Section(str, Enum):

@@ -16,3 +16,9 @@ class StorageConfigInput(TypedDict):
     connection_string: NotRequired[str | None]
     container_name: NotRequired[str | None]
     storage_account_blob_url: NotRequired[str | None]
+    aws_access_key_id: NotRequired[str | None]
+    aws_secret_access_key: NotRequired[str | None]
+    bucket_name: NotRequired[str | None]
+    base_prefix: NotRequired[str | None]
+    region_name: NotRequired[str | None]
+    

@@ -1,7 +1,7 @@
 # Copyright (c) 2024 Microsoft Corporation.
 # Licensed under the MIT License
 
-"""A module containing 'PipelineStorageConfig', 'PipelineFileStorageConfig' and 'PipelineMemoryStorageConfig' models."""
+"""A module containing 'PipelineStorageConfig', 'PipelineFileStorageConfig', 'PipelineMemoryStorageConfig' and 'PipelineS3StorageConfig' models."""
 
 from __future__ import annotations
 
@@ -67,6 +67,32 @@ class PipelineBlobStorageConfig(PipelineStorageConfig[Literal[StorageType.blob]]
     """The storage account blob url."""
 
 
+class PipelineS3StorageConfig(PipelineStorageConfig[Literal[StorageType.s3]]):
+    """Represents the S3 storage configuration for the pipeline."""
+    type: Literal[StorageType.s3] = StorageType.s3
+    """The type of storage."""
+    bucket_name: str = pydantic_Field(
+        description="The S3 bucket name for storage", default=None
+    )
+    """The S3 bucket name for storage."""
+    base_prefix: str | None = pydantic_Field(
+        description="The base prefix (folder) in the S3 bucket.", default=None
+    )
+    """The base prefix (folder) in the S3 bucket."""
+    aws_access_key_id: str | None = pydantic_Field(
+        description="The AWS access key ID.", default=None
+    )
+    """The AWS access key ID."""
+    aws_secret_access_key: str | None = pydantic_Field(
+        description="The AWS secret access key.", default=None
+    )
+    """The AWS secret access key."""
+    region_name: str | None = pydantic_Field(
+        description="The AWS region name.", default=None
+    )
+    """The AWS region name."""
+
+
 PipelineStorageConfigTypes = (
-    PipelineFileStorageConfig | PipelineMemoryStorageConfig | PipelineBlobStorageConfig
+    PipelineFileStorageConfig | PipelineMemoryStorageConfig | PipelineBlobStorageConfig | PipelineS3StorageConfig
 )

@@ -60,6 +60,8 @@ class StorageType(str, Enum):
     """The memory storage type."""
     blob = "blob"
     """The blob storage type."""
+    s3 = "s3"
+    """The s3 storage type."""
 
     def __repr__(self):
         """Get a string representation."""

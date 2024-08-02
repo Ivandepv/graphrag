@@ -12,10 +12,12 @@ from graphrag.index.config.storage import (
     PipelineBlobStorageConfig,
     PipelineFileStorageConfig,
     PipelineStorageConfig,
+    PipelineS3StorageConfig
 )
 
 from .blob_pipeline_storage import create_blob_storage
 from .file_pipeline_storage import create_file_storage
+from .s3_pipeline_storage import create_s3_storage
 from .memory_pipeline_storage import create_memory_storage
 
 
@@ -35,6 +37,17 @@ def load_storage(config: PipelineStorageConfig):
         case StorageType.file:
             config = cast(PipelineFileStorageConfig, config)
             return create_file_storage(config.base_dir)
+        
+        case StorageType.s3:
+            config = cast(PipelineS3StorageConfig, config)
+            print(f"config 2: {config}")
+            return create_s3_storage(
+                config.aws_access_key_id,
+                config.aws_secret_access_key,
+                config.bucket_name,
+                config.base_prefix,
+                config.region_name,
+            )
         case _:
             msg = f"Unknown storage type: {config.type}"
             raise ValueError(msg)

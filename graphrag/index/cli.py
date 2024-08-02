@@ -247,6 +247,7 @@ def _create_default_config(
     if verbose or dryrun:
         reporter.info(f"Using default configuration: {redact(parameters.model_dump())}")
     result = create_pipeline_config(parameters, verbose)
+    reporter.info(redact(result.storage.model_dump()))
     if verbose or dryrun:
         reporter.info(f"Final Config: {redact(result.model_dump())}")
 
@@ -277,7 +278,9 @@ def _read_config_parameters(root: str, config: str | None, reporter: ProgressRep
             import yaml
 
             data = yaml.safe_load(file.read().decode(encoding="utf-8", errors="strict"))
-            return create_graphrag_config(data, root)
+            config = create_graphrag_config(data, root)
+            print(config)
+            return config
 
     if settings_json.exists():
         reporter.success(f"Reading settings from {settings_json}")
@@ -288,7 +291,9 @@ def _read_config_parameters(root: str, config: str | None, reporter: ProgressRep
             return create_graphrag_config(data, root)
 
     reporter.success("Reading settings from environment variables")
-    return create_graphrag_config(root_dir=root)
+    config = create_graphrag_config(root_dir=root)
+    log.info("using default configuration: %s", redact(config.model_dump()))
+    return config
 
 
 def _get_progress_reporter(reporter_type: str | None) -> ProgressReporter:

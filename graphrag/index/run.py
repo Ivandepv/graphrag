@@ -35,6 +35,7 @@ from .config import (
     PipelineFileCacheConfig,
     PipelineFileReportingConfig,
     PipelineFileStorageConfig,
+    PipelineS3StorageConfig,
     PipelineInputConfigTypes,
     PipelineMemoryCacheConfig,
     PipelineReportingConfigTypes,
@@ -109,11 +110,11 @@ async def run_pipeline_with_config(
     config = load_pipeline_config(config_or_path)
     config = _apply_substitutions(config, run_id)
     root_dir = config.root_dir
-
+    print(f"config: {config}")
     def _create_storage(config: PipelineStorageConfigTypes | None) -> PipelineStorage:
         return load_storage(
             config
-            or PipelineFileStorageConfig(base_dir=str(Path(root_dir or "") / "output"))
+            or PipelineS3StorageConfig(bucket_name="default-bucket", base_prefix="graphrag/output"),
         )
 
     def _create_cache(config: PipelineCacheConfigTypes | None) -> PipelineCache:
