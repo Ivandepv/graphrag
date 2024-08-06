@@ -110,7 +110,6 @@ async def run_pipeline_with_config(
     config = load_pipeline_config(config_or_path)
     config = _apply_substitutions(config, run_id)
     root_dir = config.root_dir
-    print(f"config: {config}")
     def _create_storage(config: PipelineStorageConfigTypes | None) -> PipelineStorage:
         return load_storage(
             config
@@ -147,7 +146,7 @@ async def run_pipeline_with_config(
         config.input
     )
     workflows = workflows or config.workflows
-
+    print(f"dataset: {dataset}")
     if dataset is None:
         msg = "No dataset provided!"
         raise ValueError(msg)

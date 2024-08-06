@@ -70,6 +70,32 @@ class PipelineInputConfig(BaseModel, Generic[T]):
     )
     """The encoding for the input files."""
 
+    # Add these new fields for S3 support
+    bucket_name: str | None = pydantic_Field(
+        description="The S3 bucket name for the input files.", default=None
+    )
+    """The S3 bucket name for the input files."""
+
+    base_prefix: str | None = pydantic_Field(
+        description="The base prefix (folder) in the S3 bucket for the input files.", default=None
+    )
+    """The base prefix (folder) in the S3 bucket for the input files."""
+
+    aws_access_key_id: str | None = pydantic_Field(
+        description="The AWS access key ID for S3 authentication.", default=None
+    )
+    """The AWS access key ID for S3 authentication."""
+
+    aws_secret_access_key: str | None = pydantic_Field(
+        description="The AWS secret access key for S3 authentication.", default=None
+    )
+    """The AWS secret access key for S3 authentication."""
+
+    region_name: str | None = pydantic_Field(
+        description="The AWS region name for the S3 bucket.", default=None
+    )
+    """The AWS region name for the S3 bucket."""
+    
 
 class PipelineCSVInputConfig(PipelineInputConfig[Literal[InputFileType.csv]]):
     """Represent the configuration for a CSV input."""

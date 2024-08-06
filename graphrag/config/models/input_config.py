@@ -58,3 +58,18 @@ class InputConfig(BaseModel):
     document_attribute_columns: list[str] = Field(
         description="The document attribute columns to use.", default=[]
     )
+    bucket_name: str | None = Field(
+        description="The aws bucket name to use.", default=None
+    )
+    base_prefix: str | None = Field(
+        description="The aws base prefix to use.", default=None
+    )
+    aws_access_key_id: str | None = Field(
+        description="The aws access key id to use.", default=None
+    )
+    aws_secret_access_key: str | None = Field(
+        description="The aws secret access key to use.", default=None
+    )
+    region_name: str | None = Field(
+        description="The aws region name to use.", default=None
+    )

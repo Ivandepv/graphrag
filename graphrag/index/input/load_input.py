@@ -16,17 +16,21 @@ from graphrag.index.progress import NullProgressReporter, ProgressReporter
 from graphrag.index.storage import (
     BlobPipelineStorage,
     FilePipelineStorage,
+    S3PipelineStorage
 )
 
 from .csv import input_type as csv
 from .csv import load as load_csv
 from .text import input_type as text
 from .text import load as load_text
+from .s3_text import input_type as s3_text
+from .s3_text import load as load_s3_text
 
 log = logging.getLogger(__name__)
 loaders: dict[str, Callable[..., Awaitable[pd.DataFrame]]] = {
     text: load_text,
     csv: load_csv,
+    s3_text: load_s3_text,
 }
 
 
@@ -67,6 +71,15 @@ async def load_input(
             storage = FilePipelineStorage(
                 root_dir=str(Path(root_dir) / (config.base_dir or ""))
             )
+        case InputType.s3:
+            log.info("using S3 storage for input")
+            storage = S3PipelineStorage(
+                aws_access_key_id=config.aws_access_key_id,
+                aws_secret_access_key=config.aws_secret_access_key,
+                bucket_name=config.bucket_name,
+                base_prefix=config.base_prefix,
+                region_name=config.region_name,
+            )
         case _:
             log.info("using file storage for input")
             storage = FilePipelineStorage(
@@ -80,6 +93,8 @@ async def load_input(
         loader = loaders[config.file_type]
         results = await loader(config, progress, storage)
         return cast(pd.DataFrame, results)
+    
+    
 
     msg = f"Unknown input type {config.file_type}"
     raise ValueError(msg)

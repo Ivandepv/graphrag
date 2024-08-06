@@ -83,11 +83,13 @@ class FilePipelineStorage(PipelineStorage):
         file_path = join_path(self._root_dir, key)
 
         if await self.has(key):
-            return await self._read_file(file_path, as_bytes, encoding)
+            result = self._read_file(file_path, as_bytes, encoding)
+            return await result
         if await exists(key):
             # Lookup for key, as it is pressumably a new file loaded from inputs
             # and not yet written to storage
-            return await self._read_file(key, as_bytes, encoding)
+            result = self._read_file(key, as_bytes, encoding)
+            return await result
 
         return None
 

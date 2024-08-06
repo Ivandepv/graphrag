@@ -1,12 +1,6 @@
-# Copyright (c) 2024 Microsoft Corporation.
-# Licensed under the MIT License
-
-"""A module containing 'S3PipelineStorage' model."""
-
 import logging
 import re
 from collections.abc import Iterator
-from io import BytesIO
 from typing import Any, cast
 
 import boto3
@@ -23,17 +17,17 @@ class S3PipelineStorage(PipelineStorage):
     """S3 storage class definition."""
 
     def __init__(self,
-                aws_access_key_id: str | None = None, 
-                aws_secret_access_key: str | None = None, 
-                bucket_name: str | None = None,
-                base_prefix: str | None = None, 
-                region_name: str | None = None):
-
+                 aws_access_key_id: str | None = None, 
+                 aws_secret_access_key: str | None = None, 
+                 bucket_name: str | None = None,
+                 base_prefix: str | None = None, 
+                 region_name: str | None = None):
         """Init method definition."""
-        print(f"bucket name: {bucket_name}, base_prefix: {base_prefix}, aws_access_key_id: {aws_access_key_id}, aws_secret_access_key: {aws_secret_access_key}, region_name: {region_name}")
         self.bucket_name = bucket_name
+        print(f"bucket_name: {bucket_name}")
         self.base_prefix = base_prefix or ""
-        self.s3 = boto3.client('s3')
+        print(f"base_prefix: {base_prefix}")
+        self.s3 = boto3.client("s3")
 
     def find(
         self,
@@ -74,6 +68,10 @@ class S3PipelineStorage(PipelineStorage):
     async def get(self, key: str, as_bytes: bool | None = False, encoding: str | None = None) -> Any:
         """Get method definition."""
         full_key = f"{self.base_prefix}/{key}" if self.base_prefix else key
+        # Temporal solution s3_text
+         # Check for duplicate base prefix and adjust if necessary
+        if full_key.count(self.base_prefix) > 1:
+            full_key = full_key.replace(f"{self.base_prefix}/", "", 1)
         try:
             response = self.s3.get_object(Bucket=self.bucket_name, Key=full_key)
             data = response['Body'].read()
@@ -81,14 +79,16 @@ class S3PipelineStorage(PipelineStorage):
                 return data
             return data.decode(encoding or 'utf-8')
         except ClientError as e:
+            log.error(f"Error fetching object from S3: {e.response['Error']['Message']}")
+            print(f"Error fetching object from S3: {e.response['Error']['Message']}")
             if e.response['Error']['Code'] == 'NoSuchKey':
+
                 return None
             raise
 
     async def set(self, key: str, value: Any, encoding: str | None = None) -> None:
         """Set method definition."""
         full_key = f"{self.base_prefix}/{key}" if self.base_prefix else key
-        print(f"bucket name: {self.bucket_name}")
         if isinstance(value, bytes):
             self.s3.put_object(Bucket=self.bucket_name, Key=full_key, Body=value)
         else:
@@ -122,18 +122,30 @@ class S3PipelineStorage(PipelineStorage):
         if name is None:
             return self
         new_prefix = f"{self.base_prefix}/{name}" if self.base_prefix else name
-        return S3PipelineStorage(self.bucket_name, new_prefix, 
-                                 self.s3.meta.client.meta.config.credentials.access_key,
-                                 self.s3.meta.client.meta.config.credentials.secret_key,
-                                 self.s3.meta.client.meta.region_name)
+        return S3PipelineStorage(
+            aws_access_key_id=self.s3.meta.client.meta.config.credentials.access_key,
+            aws_secret_access_key=self.s3.meta.client.meta.config.credentials.secret_key,
+            bucket_name=self.bucket_name,
+            base_prefix=new_prefix,
+            region_name=self.s3.meta.client.meta.region_name
+        )
 
-def create_s3_storage(bucket_name: str, base_prefix: str | None = None, 
-                      aws_access_key_id: str | None = None, 
-                      aws_secret_access_key: str | None = None, 
+def create_s3_storage(
+    
+        aws_access_key_id: str | None = None, 
+        aws_secret_access_key: str | None = None, 
+        bucket_name: str | None=None, 
+        base_prefix: str | None = None, 
                       region_name: str | None = None) -> PipelineStorage:
     """Create an S3 based storage."""
     log.info("Creating S3 storage in bucket %s with prefix %s", bucket_name, base_prefix)
-    return S3PipelineStorage(bucket_name, base_prefix, aws_access_key_id, aws_secret_access_key, region_name)
+    return S3PipelineStorage(
+        aws_access_key_id=aws_access_key_id,
+        aws_secret_access_key=aws_secret_access_key,
+        bucket_name=bucket_name,
+        base_prefix=base_prefix,
+        region_name=region_name
+    )
 
 def _create_progress_status(num_loaded: int, num_filtered: int, num_total: int) -> Progress:
     return Progress(

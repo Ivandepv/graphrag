@@ -32,6 +32,8 @@ class InputFileType(str, Enum):
     """The CSV input type."""
     text = "text"
     """The text input type."""
+    s3 = "s3"
+    """The S3 input type"""
 
     def __repr__(self):
         """Get a string representation."""
@@ -45,6 +47,8 @@ class InputType(str, Enum):
     """The file storage type."""
     blob = "blob"
     """The blob storage type."""
+    s3 = "s3"
+    """The s3 storage type."""
 
     def __repr__(self):
         """Get a string representation."""

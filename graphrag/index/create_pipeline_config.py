@@ -480,6 +480,12 @@ def _get_pipeline_input_config(
                 connection_string=settings.input.connection_string,
                 storage_account_blob_url=settings.input.storage_account_blob_url,
                 container_name=settings.input.container_name,
+                bucket_name=settings.input.bucket_name,
+                base_prefix=settings.input.base_prefix,
+                aws_access_key_id=settings.input.aws_access_key_id,
+                aws_secret_access_key=settings.input.aws_secret_access_key,
+                region_name=settings.input.region_name,
+
             )
         case _:
             msg = f"Unknown input type: {file_type}"

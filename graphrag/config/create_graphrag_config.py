@@ -350,6 +350,11 @@ def create_graphrag_config(
                 connection_string=reader.str(Fragment.conn_string),
                 storage_account_blob_url=reader.str(Fragment.storage_account_blob_url),
                 container_name=reader.str(Fragment.container_name),
+                bucket_name=reader.str(Fragment.bucket_name),
+                base_prefix=reader.str(Fragment.base_prefix),
+                aws_access_key_id=reader.str(Fragment.aws_access_key_id),
+                aws_secret_access_key=reader.str(Fragment.aws_secret_access_key),
+                region_name=reader.str(Fragment.region_name),
             )
         with reader.envvar_prefix(Section.cache), reader.use(values.get("cache")):
             c_type = reader.str(Fragment.type)

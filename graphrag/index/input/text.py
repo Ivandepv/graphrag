@@ -28,7 +28,7 @@ async def load(
     storage: PipelineStorage,
 ) -> pd.DataFrame:
     """Load text inputs from a directory."""
-
+    print("hola")
     async def load_file(
         path: str, group: dict | None = None, _encoding: str = "utf-8"
     ) -> dict[str, Any]:
